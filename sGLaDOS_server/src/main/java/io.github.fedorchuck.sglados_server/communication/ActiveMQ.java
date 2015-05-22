@@ -55,8 +55,8 @@ public class ActiveMQ {
     /**
      * Send the message in created channel.
      */
-    public synchronized void send(String dataToSend) {
-        if (dataToSend == null) return;
+    public synchronized boolean send(String dataToSend) {
+        if (dataToSend == null) return false;
         try {
             producer = session.createProducer(sendingQueue);
             producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
@@ -68,8 +68,10 @@ public class ActiveMQ {
             producer.send(message);
 
             producer.close();
+            return true;
         } catch (JMSException e) {
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -165,7 +167,7 @@ public class ActiveMQ {
     }
 
     /**
-     * print message
+     * @deprecated
      * */
     private void receavedMessage(String text) {
         //TODO: connect PostgreSQL

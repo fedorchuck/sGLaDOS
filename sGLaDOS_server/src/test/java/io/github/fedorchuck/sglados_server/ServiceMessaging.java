@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import io.github.fedorchuck.sglados_server.communication.ActiveMQ;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -38,7 +39,10 @@ public class ServiceMessaging {
         ActiveMQ.instance.closeChannel();
     }
 
-    //It is times construction. It is help to testing.
+
+    /**It is times construction. It is help to testing.
+     * @deprecated
+     * */
     private static String example()
     {
         final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

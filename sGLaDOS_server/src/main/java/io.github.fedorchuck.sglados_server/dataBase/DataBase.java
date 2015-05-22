@@ -5,6 +5,7 @@ import io.github.fedorchuck.sglados_server.model.MessageBuilder;
 import io.github.fedorchuck.sglados_server.helperUnits.ThrowThrowable;
 import org.postgresql.util.PSQLException;
 
+import java.net.Socket;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -290,6 +291,16 @@ public class DataBase {
         if (((ArrayList)result.get(0)).get(0) != null)
             return (Integer)((ArrayList)result.get(0)).get(0);
         else return 0;
+    }
+
+    public static boolean psqlAvailable(String host, int port) {
+        try {
+            Socket s = new Socket(host, port);
+            s.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }
