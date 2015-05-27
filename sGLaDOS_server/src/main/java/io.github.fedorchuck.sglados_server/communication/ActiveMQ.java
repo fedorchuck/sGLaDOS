@@ -1,9 +1,15 @@
 package io.github.fedorchuck.sglados_server.communication;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.apache.activemq.ActiveMQConnectionFactory;
 
 import javax.jms.*;
+import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,7 +26,8 @@ import java.util.UUID;
  * login, password - admin.
  * [OK]<p>
  */
-public class ActiveMQ {
+@Singleton
+public class ActiveMQ implements ICommunication, AutoCloseable {
     public static final ActiveMQ instance = new ActiveMQ();
     private String host;
     private String queue;
@@ -32,9 +39,18 @@ public class ActiveMQ {
     private MessageConsumer consumer;
     private MessageProducer producer;
     private Thread thread;
+    private boolean canRun = true;
+    @Inject
     private ActiveMQ() {
     }
-    public boolean canRun = true;
+
+    public void setCanRun(boolean canRun) {
+        this.canRun = canRun;
+    }
+
+    public boolean getCanRun() {
+        return canRun;
+    }
 
     public void setHost(String nameOfHost) {
         host = nameOfHost;
@@ -126,7 +142,8 @@ public class ActiveMQ {
     /**
      * Close the all channel
      */
-    public void closeChannel() throws JMSException, InterruptedException {
+    @Override
+    public void close() throws JMSException, InterruptedException {
         canRun = false;
         Thread.sleep(1000);
         thread.stop();
@@ -143,8 +160,18 @@ public class ActiveMQ {
         }
     }
 
+    public boolean checkAvailable(String host, int port) {
+        try {
+            Socket s = new Socket(host, port);
+            s.close();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     /**
-     *Take the destination
+     * Take the destination
      */
     private Destination start(String host, String queue) {
         Destination destination = null;
@@ -175,5 +202,18 @@ public class ActiveMQ {
 
         System.out.println("*******************");
     }
+
+    /**
+     * It is times construction. used it for tests.
+     * @deprecated
+     * */
+    public static String example()
+    {
+        final DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        Date date = new Date();
+        String time = dateFormat.format(date).toString();//
+        return time;
+    }
+
 
 }
