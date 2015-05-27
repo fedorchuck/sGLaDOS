@@ -1,7 +1,7 @@
 package io.github.fedorchuck.sglados_server;
 
 import io.github.fedorchuck.sglados_server.model.MessageBuilder;
-import io.github.fedorchuck.sglados_server.dataBase.DataBase;
+import io.github.fedorchuck.sglados_server.dataBase.Postgre;
 import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Ignore;
@@ -11,7 +11,7 @@ import org.junit.Test;
  * Created by v on 22.05.2015.
  */
 public class DataBaseTest extends TestCase {
-    public DataBase db = new DataBase();
+    public Postgre db = new Postgre();
     @Test
     public void testCreateTable() throws Exception {
         boolean psql = db.psqlAvailable("localhost", 5432);
