@@ -2,7 +2,7 @@ package io.github.fedorchuck.sglados_server.dataBase;
 
 import io.github.fedorchuck.sglados_server.model.Message;
 import io.github.fedorchuck.sglados_server.model.MessageBuilder;
-import io.github.fedorchuck.sglados_server.helperUnits.ThrowThrowable;
+import io.github.fedorchuck.sglados_server.utils.ThrowThrowable;
 import org.postgresql.util.PSQLException;
 
 import java.net.Socket;
@@ -12,7 +12,7 @@ import java.util.ArrayList;
 /**
  * Created by v on 22.05.2015.
  */
-public class DataBase {
+public class Postgre implements IStorage{
     private Connection connection;
     private ThrowThrowable throwThrowable;
 
@@ -24,7 +24,7 @@ public class DataBase {
         return connection;
     }
 
-    public DataBase() {
+    public Postgre() {
         ThrowThrowable th = new ThrowThrowable();
         this.throwThrowable = th;
     }
@@ -303,4 +303,11 @@ public class DataBase {
         }
     }
 
+    public void saveResponse() {
+        //TODO: add to database vs all checks
+    }
+
+    public void removeFirstMonitor(int count) {
+        //TODO: SQL: ~~ <for(int i =0; i<count; i++) database.remove(0);>
+    }
 }
