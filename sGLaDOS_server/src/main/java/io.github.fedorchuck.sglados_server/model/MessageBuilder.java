@@ -1,6 +1,6 @@
 package io.github.fedorchuck.sglados_server.model;
 
-import io.github.fedorchuck.sglados_server.helperUnits.ThrowThrowable;
+import io.github.fedorchuck.sglados_server.utils.ThrowThrowable;
 
 /**
  * Created by v on 22.05.2015.
