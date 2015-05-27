@@ -1,4 +1,4 @@
-package io.github.fedorchuck.sglados_server.helperUnits;
+package io.github.fedorchuck.sglados_server.utils;
 
 /**
  * Created by v on 22.05.2015.
