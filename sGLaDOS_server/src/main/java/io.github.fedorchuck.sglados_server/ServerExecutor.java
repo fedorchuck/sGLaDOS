@@ -1,6 +1,7 @@
 package io.github.fedorchuck.sglados_server;
 
 import com.google.inject.Inject;
+import io.github.fedorchuck.sglados_server.communication.ICommunication;
 import io.github.fedorchuck.sglados_server.config.IConfigRetriever;
 import io.github.fedorchuck.sglados_server.dataBase.IStorage;
 import io.github.fedorchuck.sglados_server.inject_config_module.BindingModule;
@@ -8,7 +9,6 @@ import io.github.fedorchuck.sglados_server.utils.InstanceCreator;
 import io.github.fedorchuck.sglados_server.view.Console;
 
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
 
 import static jdk.nashorn.internal.objects.NativeFunction.bind;
@@ -17,36 +17,34 @@ import static jdk.nashorn.internal.objects.NativeFunction.bind;
  * Created by v on 25.05.2015.
  */
 public class ServerExecutor {
+    private final ICommunication communication;
     private final IStorage storage;
     private final IConfigRetriever retriever;
 
     @Inject
-    public ServerExecutor(IStorage storage,
+    public ServerExecutor(ICommunication communication,
+                          IStorage storage,
                           IConfigRetriever retriever)
     {
         /*bind(Db.class).annotatedWith(SystemDb.class).to(DbImplOfSomeSort.class);
         bind(StatsdClient.class).to(StatsdClientImplOfSomeSort.class);*/
         //BindingModule.configure();
+        this.communication = communication;
         this.storage = storage;
         this.retriever = retriever;
     }
 
     public void execute(String args[])
     {
-        //Copying config file from root directory to target directory
-        //VelocityConfig vel_conf = VelocityConfig.getInstance();
-        //vel_conf.copyConfig();
         System.out.println("start server sdlados.");
-
         //default starting without params
         if (args.length == 0) {
             try {
-                /*if (config == null)
-                 System.out.println("FATAL ERROR: config is empty, or it is not available.");
-                 else {*/
                 if (retriever.getConfig().getAgentId() == null) {
                     generateAgentID();
                 }
+                System.out.println(retriever.getConfig().getAgentId());
+                System.out.println(retriever.getConfig().getDataBase().getConnection());
                 //startActiveMQ(config);
                 //TODO: create listening & sending queue
                 //TODO: run console

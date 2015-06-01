@@ -1,13 +1,13 @@
 {
   "agentId": "F9168C5E-CEB2-4faa-B6BF-329BF39FA1E4",
   "networking": {
-	  "reconnectionInterval": 0,
+    "reconnectionInterval": 0,
     "url": "tcp://localhost:61616",
     "queueName": "io.github.fedorchuck.sglados"
   },
   "dataBase": {
-    "db_connection": "jdbc:postgresql://localhost:5432/sglados_srv",
-    "db_user": "postgres",
-    "db_password": "cote"
+    "connection": "jdbc:postgresql://localhost:5432/",
+    "userName": "postgres",
+    "password": "cote"
   }
 }

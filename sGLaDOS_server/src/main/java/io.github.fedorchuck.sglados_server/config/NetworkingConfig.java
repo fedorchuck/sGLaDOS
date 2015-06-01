@@ -10,8 +10,12 @@ public class NetworkingConfig {
 
     public NetworkingConfig() {}
 
-    public NetworkingConfig(String url, String queueName, int reconnectionInterval)
+    public NetworkingConfig(String url,
+                            String queueName,
+                            int reconnectionInterval)
     {
+        if ("".equals(url)) url = null;
+        if ("".equals(queueName)) queueName = null;
         this.url = url;
         this.queueName = queueName;
         this.reconnectionInterval = reconnectionInterval;

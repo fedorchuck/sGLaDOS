@@ -1,5 +1,8 @@
 package io.github.fedorchuck.sglados_server.dataBase;
 
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import io.github.fedorchuck.sglados_server.config.DataBaseConfig;
 import io.github.fedorchuck.sglados_server.model.Message;
 import io.github.fedorchuck.sglados_server.model.MessageBuilder;
 import io.github.fedorchuck.sglados_server.utils.ThrowThrowable;
@@ -12,14 +15,15 @@ import java.util.ArrayList;
 /**
  * Created by v on 22.05.2015.
  */
+@Singleton
 public class Postgre implements IStorage{
     private Connection connection;
     private ThrowThrowable throwThrowable;
-
-    private static String DB_NAME = "sglados_srv";
-    private static String DB_CONNECTION = "jdbc:postgresql://localhost:5432/";
-    private static String DB_USER = "postgres";
-    private static String DB_PASSWORD = "cote";
+    private DataBaseConfig config;
+    private String DB_NAME = "sglados_srv";
+    private String DB_CONNECTION;// = "jdbc:postgresql://localhost:5432/";//config.getConnection();//
+    private String DB_USER;// = "postgres";//config.getUserName(); //
+    private String DB_PASSWORD;// = "cote";//config.getPassword(); //
 
     public void setDbConnection(String dbConnection) {
         DB_CONNECTION = dbConnection;
@@ -37,6 +41,7 @@ public class Postgre implements IStorage{
         return connection;
     }
 
+    @Inject
     public Postgre() {
         ThrowThrowable th = new ThrowThrowable();
         this.throwThrowable = th;
@@ -321,7 +326,7 @@ public class Postgre implements IStorage{
         else return 0;
     }
 
-    public static boolean psqlAvailable(String host, int port) {
+    public boolean psqlAvailable(String host, int port) {
         try {
             Socket s = new Socket(host, port);
             s.close();

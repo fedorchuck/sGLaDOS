@@ -18,8 +18,8 @@ public class ServerConfig {
     private UUID agentId;
     @JsonProperty("networking")
     private NetworkingConfig networking = new NetworkingConfig();
-    @JsonProperty("records_count")
-    private int recordsCount;
+    @JsonProperty("dataBase")
+    private DataBaseConfig dataBase = new DataBaseConfig();
 
     /**
      * Reload config from the specified path early. Usually is called after setPath(path) method.
@@ -36,13 +36,17 @@ public class ServerConfig {
         return networking;
     }
 
-    public void setRecordsCount(int recordsCount) {
+    public DataBaseConfig getDataBase() { return dataBase; }
+
+    //region Description
+    /*public void setRecordsCount(int recordsCount) {
         this.recordsCount = recordsCount;
     }
 
     public int getRecordsCount() {
         return recordsCount;
-    }
+    }*/
+    //endregion
 
 
 
