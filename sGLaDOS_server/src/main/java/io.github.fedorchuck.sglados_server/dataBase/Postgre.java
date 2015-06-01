@@ -16,9 +16,22 @@ public class Postgre implements IStorage{
     private Connection connection;
     private ThrowThrowable throwThrowable;
 
-    private static final String DB_CONNECTION = "jdbc:postgresql://localhost:5432/sglados_srv";
-    private static final String DB_USER = "postgres";
-    private static final String DB_PASSWORD = "cote";
+    private static String DB_NAME = "sglados_srv";
+    private static String DB_CONNECTION = "jdbc:postgresql://localhost:5432/";
+    private static String DB_USER = "postgres";
+    private static String DB_PASSWORD = "cote";
+
+    public void setDbConnection(String dbConnection) {
+        DB_CONNECTION = dbConnection;
+    }
+
+    public void setDbUser(String dbUser) {
+        DB_USER = dbUser;
+    }
+
+    public void setDbPassword(String dbPassword) {
+        DB_PASSWORD = dbPassword;
+    }
 
     public Connection getConnection() {
         return connection;
@@ -29,16 +42,31 @@ public class Postgre implements IStorage{
         this.throwThrowable = th;
     }
 
-    public void connectionOpen() {
+    public void connectionOpen() throws SQLException {
         String what = "problem with open connection to dataBase";
         try {
             this.connection = DriverManager
-                    .getConnection(DB_CONNECTION,
+                    .getConnection(DB_CONNECTION + DB_NAME,
                             DB_USER, DB_PASSWORD);
         } catch (SQLException ex) {
-            this.throwThrowable.throwError(this.getClass(), ex, what);
+            if (ex.getMessage().endsWith("database \"" + DB_NAME + "\" does not exist")) {//sglados_srv
+                createDataBase();
+                connectionOpen();
+            } else this.throwThrowable.throwError(this.getClass(), ex, what);
         }
+    }
 
+    private void createDataBase() throws SQLException {
+        Connection connection = null;
+        connection = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
+        Statement statement = connection.createStatement();
+        statement.executeUpdate("CREATE DATABASE " + DB_NAME + "\n" +
+                "  WITH OWNER = postgres\n" +
+                "       ENCODING = 'UTF8'\n" +
+                "       TABLESPACE = pg_default\n" +
+                "       LC_COLLATE = 'Ukrainian_Ukraine.1251'\n" +
+                "       LC_CTYPE = 'Ukrainian_Ukraine.1251'\n" +
+                "       CONNECTION LIMIT = -1;");
     }
 
     public void connectionClose() {

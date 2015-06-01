@@ -7,6 +7,8 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.sql.SQLException;
+
 /**
  * Created by v on 22.05.2015.
  */
@@ -51,13 +53,12 @@ public class DataBaseTest extends TestCase {
         } else Assert.assertTrue(true);
     }
 
-    @Ignore
     @Test
-    public void testDeleteOperation() throws Exception {
+    public void testyDeleteOperation() throws Exception {
         boolean psql = db.psqlAvailable("localhost", 5432);
         if (psql) {
             db.connectionOpen();
-            boolean expected = false;//time construction
+            boolean expected = true;
             String sql = "DELETE FROM UNICORN WHERE ID=1";
             boolean result = db.deleteOperation(sql);
             db.connectionClose();
@@ -66,7 +67,7 @@ public class DataBaseTest extends TestCase {
     }
 
     @Test
-    public void testDropTable(){
+    public void testzDropTable() throws SQLException {
         boolean psql = db.psqlAvailable("localhost", 5432);
         if (psql) {
             db.connectionOpen();
