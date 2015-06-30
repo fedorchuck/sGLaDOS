@@ -4,14 +4,11 @@ import com.google.inject.Inject;
 import io.github.fedorchuck.sglados_server.communication.ICommunication;
 import io.github.fedorchuck.sglados_server.config.IConfigRetriever;
 import io.github.fedorchuck.sglados_server.dataBase.IStorage;
-import io.github.fedorchuck.sglados_server.inject_config_module.BindingModule;
 import io.github.fedorchuck.sglados_server.utils.InstanceCreator;
 import io.github.fedorchuck.sglados_server.view.Console;
 
 import java.io.IOException;
 import java.util.UUID;
-
-import static jdk.nashorn.internal.objects.NativeFunction.bind;
 
 /**
  * Created by v on 25.05.2015.
@@ -40,11 +37,11 @@ public class ServerExecutor {
         //default starting without params
         if (args.length == 0) {
             try {
-                if (retriever.getConfig().getAgentId() == null) {
+                if (retriever.getConfig().getServerId() == null) {
                     generateAgentID();
                 }
-                System.out.println(retriever.getConfig().getAgentId());
-                System.out.println(retriever.getConfig().getDataBase().getConnection());
+                connectModules();
+
                 //startActiveMQ(config);
                 //TODO: create listening & sending queue
                 //TODO: run console
@@ -90,10 +87,24 @@ public class ServerExecutor {
         return false;
     }
 
+    private void connectModules() {
+        System.out.println(retriever.getConfig().getServerId());
+        //System.out.println(retriever.getConfig().getDataBase().getConnection());
+        storage.setConnection(retriever.getConfig().getDataBase().getConnection());
+        storage.setUser(retriever.getConfig().getDataBase().getUserName());
+        storage.setPassword(retriever.getConfig().getDataBase().getPassword());
+
+        if (storage.psqlAvailable(retriever.getConfig().getDataBase().getConnection()))
+            storage.connectionOpen();
+        else throw new RuntimeException("fatal error");
+
+
+    }
+
     private static void generateAgentID() {
         UUID agentId = UUID.randomUUID();
         IConfigRetriever config = InstanceCreator.getInstance(IConfigRetriever.class);
-        config.getConfig().setAgentId(agentId);
+        config.getConfig().setServerId(agentId);
         config.saveConfig(config.getConfig());
     }
 }

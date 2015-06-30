@@ -19,21 +19,21 @@ import java.util.ArrayList;
 public class Postgre implements IStorage{
     private Connection connection;
     private ThrowThrowable throwThrowable;
-    private DataBaseConfig config;
+
     private String DB_NAME = "sglados_srv";
     private String DB_CONNECTION;// = "jdbc:postgresql://localhost:5432/";//config.getConnection();//
     private String DB_USER;// = "postgres";//config.getUserName(); //
     private String DB_PASSWORD;// = "cote";//config.getPassword(); //
 
-    public void setDbConnection(String dbConnection) {
+    public void setConnection(String dbConnection) {
         DB_CONNECTION = dbConnection;
     }
 
-    public void setDbUser(String dbUser) {
+    public void setUser(String dbUser) {
         DB_USER = dbUser;
     }
 
-    public void setDbPassword(String dbPassword) {
+    public void setPassword(String dbPassword) {
         DB_PASSWORD = dbPassword;
     }
 
@@ -47,7 +47,7 @@ public class Postgre implements IStorage{
         this.throwThrowable = th;
     }
 
-    public void connectionOpen() throws SQLException {
+    public void connectionOpen()  {
         String what = "problem with open connection to dataBase";
         try {
             this.connection = DriverManager
@@ -61,17 +61,24 @@ public class Postgre implements IStorage{
         }
     }
 
-    private void createDataBase() throws SQLException {
+    private void createDataBase() {
         Connection connection = null;
-        connection = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
-        Statement statement = connection.createStatement();
-        statement.executeUpdate("CREATE DATABASE " + DB_NAME + "\n" +
-                "  WITH OWNER = postgres\n" +
-                "       ENCODING = 'UTF8'\n" +
-                "       TABLESPACE = pg_default\n" +
-                "       LC_COLLATE = 'Ukrainian_Ukraine.1251'\n" +
-                "       LC_CTYPE = 'Ukrainian_Ukraine.1251'\n" +
-                "       CONNECTION LIMIT = -1;");
+        try {
+            connection = DriverManager.getConnection(DB_CONNECTION, DB_USER, DB_PASSWORD);
+            Statement statement = connection.createStatement();
+
+            statement.executeUpdate("CREATE DATABASE " + DB_NAME + "\n" +
+                    "  WITH OWNER = postgres\n" +
+                    "       ENCODING = 'UTF8'\n" +
+                    "       TABLESPACE = pg_default\n" +
+                    "       LC_COLLATE = 'Ukrainian_Ukraine.1251'\n" +
+                    "       LC_CTYPE = 'Ukrainian_Ukraine.1251'\n" +
+                    "       CONNECTION LIMIT = -1;");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException("start to cry");
+            //System.exit(-1);
+        }
     }
 
     public void connectionClose() {
@@ -217,29 +224,6 @@ public class Postgre implements IStorage{
         return result;
     }
 
-    /**
-     * Executes the given SQL statement, which may be an <code>INSERT</code>,
-     * <code>UPDATE</code>, or <code>DELETE</code> statement or an
-     * SQL statement that returns nothing, such as an SQL DDL statement.
-     *<p>
-     * <strong>Note:</strong>This method cannot be called on a
-     * <code>PreparedStatement</code> or <code>CallableStatement</code>.
-     * @param sql an SQL Data Manipulation Language (DML) statement, such as <code>INSERT</code>, <code>UPDATE</code> or
-     * <code>DELETE</code>; or an SQL statement that returns nothing,
-     * such as a DDL statement.
-     * Example: <code>"UPDATE COMPANY set SALARY = 25000.00 where ID=1;"</code>
-     *
-     * @return true if operation completed successfully and false if failed.
-     *
-     * @exception SQLException if a database access error occurs,
-     * this method is called on a closed <code>Statement</code>, the given
-     * SQL statement produces a <code>ResultSet</code> object, the method is called on a
-     * <code>PreparedStatement</code> or <code>CallableStatement</code>*
-     * @throws SQLTimeoutException when the driver has determined that the
-     * timeout value that was specified by the {@code setQueryTimeout}
-     * method has been exceeded and has at least attempted to cancel
-     * the currently running {@code Statement}
-     */
     public boolean updateOperation(String sql) {
         if (this.connection == null) return false;
         if (sql == null) return false;
@@ -264,29 +248,6 @@ public class Postgre implements IStorage{
         return true;
     }
 
-    /**
-     * Executes the given SQL statement, which may be an <code>INSERT</code>,
-     * <code>UPDATE</code>, or <code>DELETE</code> statement or an
-     * SQL statement that returns nothing, such as an SQL DDL statement.
-     *<p>
-     * <strong>Note:</strong>This method cannot be called on a
-     * <code>PreparedStatement</code> or <code>CallableStatement</code>.
-     * @param sql an SQL Data Manipulation Language (DML) statement, such as <code>INSERT</code>, <code>UPDATE</code> or
-     * <code>DELETE</code>; or an SQL statement that returns nothing,
-     * such as a DDL statement.
-     * Example: <code>"DELETE from COMPANY where ID=2;"</code>
-     *
-     * @return true if operation completed successfully and false if failed.
-     *
-     * @exception SQLException if a database access error occurs,
-     * this method is called on a closed <code>Statement</code>, the given
-     * SQL statement produces a <code>ResultSet</code> object, the method is called on a
-     * <code>PreparedStatement</code> or <code>CallableStatement</code>
-     * @throws SQLTimeoutException when the driver has determined that the
-     * timeout value that was specified by the {@code setQueryTimeout}
-     * method has been exceeded and has at least attempted to cancel
-     * the currently running {@code Statement}
-     */
     public boolean deleteOperation(String sql) {
         if (this.connection == null) return false;
         if (sql == null) return false;
@@ -336,11 +297,19 @@ public class Postgre implements IStorage{
         }
     }
 
-    public void saveResponse() {
-        //TODO: add to database vs all checks
+    /**
+     * "jdbc:postgresql://localhost:5432/"
+     * */
+    public boolean psqlAvailable(String url) {
+        String line0[] = url.split("/");
+        StringBuilder tmp = new StringBuilder();
+        for (String line : line0)
+            tmp.append(line);
+        String line1[] = tmp.toString().split(":");
+        return psqlAvailable(line1[2],Integer.parseInt(line1[3].toString()));
     }
 
-    public void removeFirstMonitor(int count) {
-        //TODO: SQL: ~~ <for(int i =0; i<count; i++) database.remove(0);>
+    public void saveResponse() {
+        //TODO: add to database vs all checks
     }
 }

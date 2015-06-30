@@ -2,11 +2,7 @@ package io.github.fedorchuck.sglados_server.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-import org.slf4j.Logger;
 
 /**
  * Created by v on 25.05.2015.
@@ -14,8 +10,8 @@ import org.slf4j.Logger;
 public class ServerConfig {
     public static final String DEFAULT_AGENT_CONFIG_FILE_NAME = "server_sglados_config.json";
 
-    @JsonProperty("agentId")
-    private UUID agentId;
+    @JsonProperty("serverId")
+    private UUID serverId;
     @JsonProperty("networking")
     private NetworkingConfig networking = new NetworkingConfig();
     @JsonProperty("dataBase")
@@ -24,12 +20,12 @@ public class ServerConfig {
     /**
      * Reload config from the specified path early. Usually is called after setPath(path) method.
      */
-    public void setAgentId(UUID agentId) {
-        this.agentId = agentId;
+    public void setServerId(UUID serverId) {
+        this.serverId = serverId;
     }
 
-    public UUID getAgentId() {
-        return agentId;
+    public UUID getServerId() {
+        return serverId;
     }
 
     public NetworkingConfig getNetworking() {

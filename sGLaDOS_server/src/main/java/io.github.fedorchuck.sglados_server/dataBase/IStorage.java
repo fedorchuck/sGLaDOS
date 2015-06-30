@@ -8,10 +8,13 @@ import java.sql.SQLException;
  * Created by v on 25.05.2015.
  */
 public interface IStorage {
-    void connectionOpen() throws SQLException;
-    void saveResponse();//to dataBase
-    void removeFirstMonitor(int count);
+    void setConnection(String dbConnection);
     Connection getConnection();
+    void setUser(String dbUser);
+    void setPassword(String dbPassword);
+
+    void connectionOpen();
+    void saveResponse();//to dataBase
 
 
     boolean createTable(String sql);
@@ -19,4 +22,5 @@ public interface IStorage {
     void connectionClose();
     int getLastId(String tableName);
     boolean psqlAvailable(String host, int port);
+    boolean psqlAvailable(String url);
 }
