@@ -48,6 +48,7 @@ public class ServerExecutor {
 
             } finally {
                 //TODO: close all.
+                System.exit(0);
             }
         }
 
@@ -95,10 +96,17 @@ public class ServerExecutor {
         storage.setPassword(retriever.getConfig().getDataBase().getPassword());
 
         if (storage.psqlAvailable(retriever.getConfig().getDataBase().getConnection()))
-            storage.connectionOpen();
-        else throw new RuntimeException("fatal error");
+                storage.connectionOpen();
+        else throw new RuntimeException("fatal error. check config. problem with dataStorege module. ");
 
+        if (communication.checkAvailable(retriever.getConfig().getNetworking().getUrl()))
+                communication.createReceivingChanel(
+                        retriever.getConfig().getNetworking().getUrl(),
+                        retriever.getConfig().getNetworking().getQueueName()
+                );
+        else throw new RuntimeException("fatal error. check config. problem with communication module. ");
 
+        System.out.println("ok.");
     }
 
     private static void generateAgentID() {

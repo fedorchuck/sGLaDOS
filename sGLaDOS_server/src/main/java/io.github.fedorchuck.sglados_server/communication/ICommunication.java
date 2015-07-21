@@ -11,7 +11,12 @@ public interface ICommunication extends AutoCloseable
     boolean send(String dataToSend);
     void receiver();
     void createChannel(String host, UUID id, String queue) throws InterruptedException;
+
+    void createReceivingChanel(String host, String queue);
+
     void close() throws JMSException, InterruptedException;
+    boolean checkAvailable(String host, int port);
+    boolean checkAvailable(String url);
 
     /**
      * Subscribe on this event to receive each message from server.

@@ -21,6 +21,7 @@ public interface IStorage {
 
     void connectionClose();
     int getLastId(String tableName);
+
     boolean psqlAvailable(String host, int port);
     boolean psqlAvailable(String url);
 }

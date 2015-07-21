@@ -70,7 +70,9 @@ public class ActiveMQ implements ICommunication, AutoCloseable {
 
     /**
      * Send the message in created channel.
+     * Don't forget changed and checked sendingQueue before sent the message.
      */
+    @Override
     public synchronized boolean send(String dataToSend) {
         if (dataToSend == null) return false;
         try {
@@ -94,6 +96,7 @@ public class ActiveMQ implements ICommunication, AutoCloseable {
     /**
      * Receive a message from chose channel.
      */
+    @Override
     public synchronized void receiver() {
         thread = new Thread() {
             @Override
@@ -129,6 +132,7 @@ public class ActiveMQ implements ICommunication, AutoCloseable {
     /**
      * Create the channel with names of host and queue. Create only once.
      */
+    @Override
     public void createChannel(String host, UUID id, String queue) throws InterruptedException {
         this.host = host;
         this.queue = queue;
@@ -137,6 +141,14 @@ public class ActiveMQ implements ICommunication, AutoCloseable {
         //start(host, queue);
         sendingQueue = start(host, queue + ".Client_" + id);//send to
         receivingQueue = start(host, queue + ".Server");    //take from
+    }
+
+    @Override
+    public void createReceivingChanel(String host, String queue) {
+        this.host = host;
+        this.queue = queue;
+
+        this.receivingQueue = start(host, queue + ".Server");    //take from
     }
 
     /**
@@ -160,6 +172,7 @@ public class ActiveMQ implements ICommunication, AutoCloseable {
         }
     }
 
+    @Override
     public boolean checkAvailable(String host, int port) {
         try {
             Socket s = new Socket(host, port);
@@ -168,6 +181,20 @@ public class ActiveMQ implements ICommunication, AutoCloseable {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    /**
+     * "jdbc:postgresql://localhost:5432/"
+     * */
+    @Override
+    public boolean checkAvailable(String url) {
+
+        String line0[] = url.split("/");
+        StringBuilder tmp = new StringBuilder();
+        for (String line : line0)
+            tmp.append(line);
+        String line1[] = tmp.toString().split(":");
+        return checkAvailable(line1[1],Integer.parseInt(line1[2].toString()));
     }
 
     /**
@@ -214,6 +241,8 @@ public class ActiveMQ implements ICommunication, AutoCloseable {
         String time = dateFormat.format(date).toString();//
         return time;
     }
+
+
 
 
 }

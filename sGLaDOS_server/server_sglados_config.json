@@ -2,7 +2,7 @@
   "serverId": "F9168C5E-CEB2-4faa-B6BF-39BF39FA15E4",
   "networking": {
     "reconnectionInterval": 0,
-    "url": "tcp://localhost:61616",
+    "url": "tcp://localhost:61616/",
     "queueName": "io.github.fedorchuck.sglados"
   },
   "dataBase": {

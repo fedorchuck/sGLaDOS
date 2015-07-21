@@ -18,8 +18,8 @@ public class ServiceMessaging {
      * This method demonstrated functional service messaging.
      * @deprecated
      **/
-    //@Ignore
-    @Test
+    @Ignore
+    @Test(timeout = 5000)
     //public static void main(String[] args) throws Exception
     public void testActiveMQ() throws Exception
     {
